@@ -1,10 +1,12 @@
+package manager;
+import task.*;
 import java.util.*;
 
 public class TaskManager {
 
-    final Map<Integer, Task> tasks = new HashMap<>();
-    final Map<Integer, Epic> epics = new HashMap<>();
-    final Map<Integer, Subtask> subtasks = new HashMap<>();
+    public final Map<Integer, Task> tasks = new HashMap<>();
+    public final Map<Integer, Epic> epics = new HashMap<>();
+    public final Map<Integer, Subtask> subtasks = new HashMap<>();
 
     private int nextID = 1;
 
