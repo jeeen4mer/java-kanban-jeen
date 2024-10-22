@@ -1,70 +1,84 @@
-import task.*;
-import manager.TaskManager;
+import manager.InMemoryTaskManager;
+import manager.Managers;
+import enums.Status;
+import task.Task;
+import task.Epic;
+import task.Subtask;
 
 public class Main {
 
+    private static final InMemoryTaskManager inMemoryTaskManager = Managers.getDefault();
+
     public static void main(String[] args) {
 
-        TaskManager taskManager = new TaskManager();
+        addTasks();
+        printAllTasks();
+        printViewHistory();
+    }
 
+    private static void addTasks() {
         Task buyProducts = new Task("Купить продукты", "Вместе с печеньем");
-        Task buyProductsCreated = taskManager.addTask(buyProducts);
-        System.out.println(buyProductsCreated);
+        inMemoryTaskManager.addTask(buyProducts);
 
-        Task buyProductsToUpdate = new Task(buyProducts.getId(), "Не забыть купить продукты", "Можно без печенья",
-                Status.IN_PROGRESS);
-        Task buyProductsUpdated = taskManager.updateTask(buyProductsToUpdate);
-        System.out.println(buyProductsUpdated);
-
-        Task cleanWindows = new Task("Помыть окна", "Роботом для мойки окон");
-        Task cleanWindowsCreated = taskManager.addTask(cleanWindows);
-        System.out.println(cleanWindowsCreated);
+        Task buyProductsToUpdate = new Task(buyProducts.getId(), "Не забыть купить продукты",
+                "Можно без печенья", Status.IN_PROGRESS);
+        inMemoryTaskManager.updateTask(buyProductsToUpdate);
+        inMemoryTaskManager.addTask(new Task("Помыть окна", "Роботом для мойки окон"));
 
 
         Epic cleanHouse = new Epic("Прибраться в доме", "Выбросить ненужные вещи");
-        taskManager.addEpic(cleanHouse);
-        System.out.println(cleanHouse);
+        inMemoryTaskManager.addEpic(cleanHouse);
         Subtask cleanHouseSubtask1 = new Subtask("Протереть пыль", "В том числе за диваном",
                 cleanHouse.getId());
         Subtask cleanHouseSubtask2 = new Subtask("Пропылесосить", "Новым пылесосом",
                 cleanHouse.getId());
-        taskManager.addSubtask(cleanHouseSubtask1);
-        taskManager.addSubtask(cleanHouseSubtask2);
-        System.out.println(cleanHouse);
-        taskManager.updateSubtask(cleanHouseSubtask2);
-        System.out.println(cleanHouse);
-
-
-        Epic fixWaterTap = new Epic("Починить кран", "В ванной");
-        taskManager.addEpic(fixWaterTap);
-        System.out.println(fixWaterTap);
-        Subtask fixWaterTapSubtask1 = new Subtask("Купить новый кран", "Установить новый кран",
-                fixWaterTap.getId());
-        taskManager.addSubtask(fixWaterTapSubtask1);
-        System.out.println(fixWaterTap);
-
-        System.out.println();
-        System.out.println("Изменяем статусы и удаляем одну из задач, и один из эпиков");
-        System.out.println();
-
-        buyProducts.setStatus(Status.IN_PROGRESS);
-        System.out.println(buyProductsCreated);
-        buyProducts.setStatus(Status.DONE);
-        System.out.println(buyProductsCreated);
-
-        System.out.println();
-
-        cleanHouse.setStatus(Status.IN_PROGRESS);
-        System.out.println(cleanHouse);
+        Subtask cleanHouseSubtask3 = new Subtask("Убрать мусор", "Сразу выбросить",
+                cleanHouse.getId());
+        inMemoryTaskManager.addSubtask(cleanHouseSubtask1);
+        inMemoryTaskManager.addSubtask(cleanHouseSubtask2);
+        inMemoryTaskManager.addSubtask(cleanHouseSubtask3);
         cleanHouseSubtask2.setStatus(Status.DONE);
-        cleanHouseSubtask1.setStatus(Status.IN_PROGRESS);
+        inMemoryTaskManager.updateSubtask(cleanHouseSubtask2);
+    }
+
+    private static void printAllTasks() {
+        System.out.println("Задачи:");
+        for (Task task : Main.inMemoryTaskManager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : Main.inMemoryTaskManager.getEpics()) {
+            System.out.println(epic);
+
+            for (Task task : Main.inMemoryTaskManager.getEpicSubtasks(epic)) {
+                System.out.println("--> " + task);
+            }
+        }
+
+        System.out.println("Подзадачи:");
+        for (Task subtask : Main.inMemoryTaskManager.getSubtasks()) {
+            System.out.println(subtask);
+        }
+    }
+
+    private static void printViewHistory() {
+        //просматриваем 11 задач, в истории должны отобразиться последние 10
+        Main.inMemoryTaskManager.getTaskByID(1);
+        Main.inMemoryTaskManager.getTaskByID(2);
+        Main.inMemoryTaskManager.getEpicByID(3);
+        Main.inMemoryTaskManager.getTaskByID(1);
+        Main.inMemoryTaskManager.getSubtaskByID(4);
+        Main.inMemoryTaskManager.getSubtaskByID(5);
+        Main.inMemoryTaskManager.getSubtaskByID(6);
+        Main.inMemoryTaskManager.getEpicByID(3);
+        Main.inMemoryTaskManager.getSubtaskByID(4);
+        Main.inMemoryTaskManager.getTaskByID(2);
+        Main.inMemoryTaskManager.getSubtaskByID(6);
 
         System.out.println();
-
-        taskManager.deleteTaskByID(cleanWindows.getId());
-        System.out.println(taskManager.tasks);
-        taskManager.deleteEpicByID(fixWaterTap.getId());
-        System.out.println(taskManager.epics);
-        System.out.println(taskManager.subtasks);
+        System.out.println("История просмотров:");
+        for (Task task : Main.inMemoryTaskManager.getHistory()) {
+            System.out.println(task);
+        }
     }
 }
