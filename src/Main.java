@@ -1,70 +1,88 @@
-import task.*;
+import manager.Managers;
 import manager.TaskManager;
+import model.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = new TaskManager();
+        TaskManager tasksManager = Managers.getDefault();
 
-        Task buyProducts = new Task("Купить продукты", "Вместе с печеньем");
-        Task buyProductsCreated = taskManager.addTask(buyProducts);
-        System.out.println(buyProductsCreated);
+        Task task1 = new Task("Задача 1", "Сделать сценарий действий в Main");
+        Task task2 = new Task("Задача 2", "Сварить кофейку");
 
-        Task buyProductsToUpdate = new Task(buyProducts.getId(), "Не забыть купить продукты", "Можно без печенья",
-                Status.IN_PROGRESS);
-        Task buyProductsUpdated = taskManager.updateTask(buyProductsToUpdate);
-        System.out.println(buyProductsUpdated);
+        tasksManager.addTaskToList(task1);
+        tasksManager.addTaskToList(task2);
 
-        Task cleanWindows = new Task("Помыть окна", "Роботом для мойки окон");
-        Task cleanWindowsCreated = taskManager.addTask(cleanWindows);
-        System.out.println(cleanWindowsCreated);
+        Epic driverLicenseTask = new Epic("Эпик 1", "Сдать на права");
+        SubTask driverLicenseSubtask1 = new SubTask("Подзадача 1", "Поступить в автошколу");
+        SubTask driverLicenseSubtask2 = new SubTask("Подзадача 2", "Подготовиться к экзамену");
+        SubTask driverLicenseSubtask3 = new SubTask("Подзадача 3", "Сдать экзамен");
 
+        driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask1);
+        driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask2);
+        driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask3);
+        tasksManager.addSubTaskToList(driverLicenseSubtask1);
+        tasksManager.addSubTaskToList(driverLicenseSubtask2);
+        tasksManager.addSubTaskToList(driverLicenseSubtask3);
 
-        Epic cleanHouse = new Epic("Прибраться в доме", "Выбросить ненужные вещи");
-        taskManager.addEpic(cleanHouse);
-        System.out.println(cleanHouse);
-        Subtask cleanHouseSubtask1 = new Subtask("Протереть пыль", "В том числе за диваном",
-                cleanHouse.getId());
-        Subtask cleanHouseSubtask2 = new Subtask("Пропылесосить", "Новым пылесосом",
-                cleanHouse.getId());
-        taskManager.addSubtask(cleanHouseSubtask1);
-        taskManager.addSubtask(cleanHouseSubtask2);
-        System.out.println(cleanHouse);
-        taskManager.updateSubtask(cleanHouseSubtask2);
-        System.out.println(cleanHouse);
+        Epic circusTrick = new Epic("Эпик 2", "Научиться жонглировать");
 
-
-        Epic fixWaterTap = new Epic("Починить кран", "В ванной");
-        taskManager.addEpic(fixWaterTap);
-        System.out.println(fixWaterTap);
-        Subtask fixWaterTapSubtask1 = new Subtask("Купить новый кран", "Установить новый кран",
-                fixWaterTap.getId());
-        taskManager.addSubtask(fixWaterTapSubtask1);
-        System.out.println(fixWaterTap);
+        tasksManager.addEpicToList(driverLicenseTask);
+        tasksManager.addEpicToList(circusTrick);
 
         System.out.println();
-        System.out.println("Изменяем статусы и удаляем одну из задач, и один из эпиков");
-        System.out.println();
-
-        buyProducts.setStatus(Status.IN_PROGRESS);
-        System.out.println(buyProductsCreated);
-        buyProducts.setStatus(Status.DONE);
-        System.out.println(buyProductsCreated);
+        System.out.println("Список всех задач задач");
+        System.out.println("---------------------------------------------------");
+        System.out.println(tasksManager.getAllTasksList());
 
         System.out.println();
+        System.out.println("Проверка работы истории просмотров");
+        System.out.println("---------------------------------------------------");
+        System.out.println("Скрытый вызов задачи 1");
+        tasksManager.getTaskById(1);
+        System.out.println("Проверка записи в истории:");
+        System.out.println(tasksManager.getHistory());
+        System.out.println("***************************");
+        System.out.println("Скрытый вызов задачи 2");
+        tasksManager.getTaskById(2);
+        System.out.println("Проверка записи в истории:");
+        System.out.println(tasksManager.getHistory());
+        System.out.println("***************************");
+        System.out.println("Скрытый вызов задачи 3");
+        tasksManager.getTaskById(3);
+        System.out.println("Проверка записи в истории:");
+        System.out.println(tasksManager.getHistory());
+        System.out.println("***************************");
+        System.out.println("Повторный вызов задачи 1");
+        tasksManager.getTaskById(1);
+        System.out.println("Проверка записи в истории:");
+        System.out.println(tasksManager.getHistory());
+        System.out.println("***************************");
+        System.out.println("Повторный вызов задачи 2");
+        tasksManager.getTaskById(2);
+        System.out.println("Проверка записи в истории:");
+        System.out.println(tasksManager.getHistory());
+        System.out.println("***************************");
 
-        cleanHouse.setStatus(Status.IN_PROGRESS);
-        System.out.println(cleanHouse);
-        cleanHouseSubtask2.setStatus(Status.DONE);
-        cleanHouseSubtask1.setStatus(Status.IN_PROGRESS);
 
         System.out.println();
+        System.out.println("Удаление записи с id1 из истории");
+        System.out.println("---------------------------------------------------");
+        tasksManager.removeTaskFromHistoryList(1);
+        System.out.println(tasksManager.getHistory());
 
-        taskManager.deleteTaskByID(cleanWindows.getId());
-        System.out.println(taskManager.tasks);
-        taskManager.deleteEpicByID(fixWaterTap.getId());
-        System.out.println(taskManager.epics);
-        System.out.println(taskManager.subtasks);
+        System.out.println();
+        System.out.println("Удаление эпика удалит его и его подзадачи из истории");
+        System.out.println("---------------------------------------------------");
+        System.out.println("Скрытый вызов 3 подзадач Эпика");
+        tasksManager.getTaskById(4);
+        tasksManager.getTaskById(5);
+        tasksManager.getTaskById(6);
+        System.out.println("История до удаления эпика");
+        System.out.println(tasksManager.getHistory());
+        System.out.println("История после удаления эпика");
+        tasksManager.deleteById(3);
+        System.out.println(tasksManager.getHistory());
     }
 }
