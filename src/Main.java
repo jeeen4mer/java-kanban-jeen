@@ -8,16 +8,25 @@ public class Main {
 
         TaskManager tasksManager = Managers.getDefault();
 
-        Task task1 = new Task("Задача 1", "Сделать сценарий действий в Main");
-        Task task2 = new Task("Задача 2", "Сварить кофейку");
+        // Получаем ID и создаем Task
+        int taskId1 = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        Task task1 = new Task(taskId1, "Задача 1", "Сделать сценарий действий в Main");
+
+        int taskId2 = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        Task task2 = new Task(taskId2,"Задача 2", "Сварить кофейку");
 
         tasksManager.addTaskToList(task1);
         tasksManager.addTaskToList(task2);
 
-        Epic driverLicenseTask = new Epic("Эпик 1", "Сдать на права");
-        SubTask driverLicenseSubtask1 = new SubTask("Подзадача 1", "Поступить в автошколу");
-        SubTask driverLicenseSubtask2 = new SubTask("Подзадача 2", "Подготовиться к экзамену");
-        SubTask driverLicenseSubtask3 = new SubTask("Подзадача 3", "Сдать экзамен");
+        int epicId = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        Epic driverLicenseTask = new Epic(epicId,"Эпик 1", "Сдать на права");
+
+        int subTaskId1 = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        SubTask driverLicenseSubtask1 = new SubTask(subTaskId1,"Подзадача 1", "Поступить в автошколу");
+        int subTaskId2 = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        SubTask driverLicenseSubtask2 = new SubTask(subTaskId2,"Подзадача 2", "Подготовиться к экзамену");
+        int subTaskId3 = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        SubTask driverLicenseSubtask3 = new SubTask(subTaskId3,"Подзадача 3", "Сдать экзамен");
 
         driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask1);
         driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask2);
@@ -26,7 +35,8 @@ public class Main {
         tasksManager.addSubTaskToList(driverLicenseSubtask2);
         tasksManager.addSubTaskToList(driverLicenseSubtask3);
 
-        Epic circusTrick = new Epic("Эпик 2", "Научиться жонглировать");
+        int epicId2 = ((manager.InMemoryTasksManager) tasksManager).generateId();
+        Epic circusTrick = new Epic(epicId2,"Эпик 2", "Научиться жонглировать");
 
         tasksManager.addEpicToList(driverLicenseTask);
         tasksManager.addEpicToList(circusTrick);

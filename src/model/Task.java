@@ -2,28 +2,33 @@ package model;
 
 import java.util.Objects;
 
-//
 public class Task {
     private String name;
     private String description;
     private Integer id;
-    private static int count = 0;
     private TaskStatus taskStatus;
-
     private int relationEpicId;
 
+    //конструктор для новых объектов, id получаем в InMemoryTasksManager
     public Task(String name, String description) {
-        count++;
-        id = count;
         this.taskStatus = TaskStatus.NEW;
         this.name = name;
         this.description = description;
     }
 
+    //конструктор для загрузки данных из файла. id задается из файла
     public Task(String name, String description, int id) {
         this(name, description);
         this.id = id;
     }
+
+    //конструктор для id
+    public Task(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
 
     public String getName() {
         return name;
@@ -45,6 +50,9 @@ public class Task {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public TaskStatus getTaskStatus() {
         return taskStatus;
     }

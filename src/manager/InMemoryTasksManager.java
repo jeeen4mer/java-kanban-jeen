@@ -14,9 +14,8 @@ public class InMemoryTasksManager implements TaskManager {
     private Map<Integer, Epic> epicsList = new HashMap<>();
     private Map<Integer, SubTask> subtasksList = new HashMap<>();
 
-    //Список занятых id, чтобы нельзя было назначить уже используемый id,
-    //использую String чтобы можно было удалять элемент по значению
-    private Collection<String> idInUse = new ArrayList<>();
+    private int idCounter = 0; // Добавили счетчик ID
+
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -26,8 +25,6 @@ public class InMemoryTasksManager implements TaskManager {
         List<Task> allTasksList = new ArrayList<>();
         allTasksList.addAll(tasksList.values());
 
-        //немного усложнил, хотел сделать чтобы в списке всех задач был порядок,
-        // сначала добавляется эпик, затем его подзадачи, затем следующий эпик и т.д.
         for (Epic epic : epicsList.values()) {
             allTasksList.add(epic);
             int epicId = epic.getId();
@@ -52,7 +49,7 @@ public class InMemoryTasksManager implements TaskManager {
         if (tasksList.containsKey(idToFind)) {
             foundTask = tasksList.get(idToFind);
             historyManager.add(foundTask);
-            return  foundTask;
+            return foundTask;
         }
 
         if (epicsList.containsKey(idToFind)) {
@@ -69,19 +66,16 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public void addTaskToList(Task newTask) {
         tasksList.put(newTask.getId(), newTask);
-        idInUse.add(String.valueOf(newTask.getId()));
     }
 
     @Override
     public void addEpicToList(Epic newEpic) {
         epicsList.put(newEpic.getId(), newEpic);
-        idInUse.add(String.valueOf(newEpic.getId()));
     }
 
     @Override
     public void addSubTaskToList(SubTask newSubtask) {
         subtasksList.put(newSubtask.getId(), newSubtask);
-        idInUse.add(String.valueOf(newSubtask.getId()));
     }
 
     @Override
@@ -94,10 +88,10 @@ public class InMemoryTasksManager implements TaskManager {
                 updatedTask.setTaskStatus(TaskStatus.DONE);
         }
 
-        if (updatedTask.getClass().getName().equals("Model.SubTask")) {
+        if (updatedTask.getClass().getName().equals("model.SubTask")) {
             SubTask updatedTaskCopy = (SubTask) updatedTask;
             Epic relatedEpic = epicsList.get(updatedTaskCopy.getRelationEpicId());
-            checkAndSetEpicStatus(relatedEpic.getId());//добавил метод, чтобы разгрузить действующий метод
+            checkAndSetEpicStatus(relatedEpic.getId());
         }
     }
 
@@ -114,8 +108,6 @@ public class InMemoryTasksManager implements TaskManager {
                 }
             }
         }
-        //if all SubTasks is DONE, Model.Epic is DONE, else Model.Epic IN_PROGRESS because this method use only when
-        // Model.SubTask status is updated
         if (isAllSubtasksDone) {
             epicsList.get(epicId).setTaskStatus(TaskStatus.DONE);
         } else {
@@ -127,27 +119,22 @@ public class InMemoryTasksManager implements TaskManager {
     public void deleteById(int idToRemove) {
         if (tasksList.containsKey(idToRemove)) {
             tasksList.remove(idToRemove);
-            idInUse.remove(String.valueOf(idToRemove));
         }
 
         if (subtasksList.containsKey(idToRemove)) {
             subtasksList.remove(idToRemove);
-            idInUse.remove(String.valueOf(idToRemove));
         }
-        //если удаляется эпик, удаляются все его подзадачи
         if (epicsList.containsKey(idToRemove)) {
             epicsList.remove(idToRemove);
-            idInUse.remove(String.valueOf(idToRemove));
-            removeSubtasksOfEpic(idToRemove);//добавил метод, чтобы разгрузить действующий метод
+            removeSubtasksOfEpic(idToRemove);
         }
 
         removeTaskFromHistoryList(idToRemove);
     }
 
+
     @Override
     public void removeSubtasksOfEpic(int id) {
-        //создаю список, куда положу id подзадач для удаления, т.к. в foreach нельзя редактировать список, в цикле for
-        // возникала ошибка, этот способ показался оптимальным из всех что я придумал)
         ArrayList<Integer> idSubtasksToRemove = new ArrayList<>();
 
         for (SubTask subtaskToCheck : subtasksList.values()) {
@@ -158,7 +145,6 @@ public class InMemoryTasksManager implements TaskManager {
 
         for (Integer idToRemove : idSubtasksToRemove) {
             subtasksList.remove(idToRemove);
-            idInUse.remove(String.valueOf(idToRemove));
             removeTaskFromHistoryList(idToRemove);
         }
     }
@@ -184,5 +170,10 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public void removeTaskFromHistoryList(int id) {
         historyManager.remove(id);
+    }
+
+    // Метод для получения нового id
+    public int generateId(){
+        return ++idCounter;
     }
 }
