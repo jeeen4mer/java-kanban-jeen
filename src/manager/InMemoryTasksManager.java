@@ -171,7 +171,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     // Метод для получения нового id
-    public int generateId(){
+    public int generateId() {
         return ++idCounter;
     }
 }
