@@ -143,7 +143,7 @@ public class InMemoryTasksManager implements TaskManager {
 
         for (Integer idToRemove : idSubtasksToRemove) {
             subtasksList.remove(idToRemove);
-            removeTaskFromHistoryList(idToRemove);
+             removeTaskFromHistoryList(idToRemove);
         }
     }
 
