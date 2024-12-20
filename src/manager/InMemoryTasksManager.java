@@ -133,7 +133,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeSubtasksOfEpic(int id) {
-        ArrayList<Integer> idSubtasksToRemove = new ArrayList<>();
+         ArrayList<Integer> idSubtasksToRemove = new ArrayList<>();
 
         for (SubTask subtaskToCheck : subtasksList.values()) {
             if (subtaskToCheck.getRelationEpicId() == id) {
