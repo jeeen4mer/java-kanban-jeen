@@ -28,6 +28,7 @@ public class Main {
         int subTaskId3 = ((manager.InMemoryTasksManager) tasksManager).generateId();
         SubTask driverLicenseSubtask3 = new SubTask(subTaskId3,"Подзадача 3", "Сдать экзамен");
 
+        tasksManager.addEpicToList(driverLicenseTask);
         driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask1);
         driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask2);
         driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask3);
@@ -38,7 +39,6 @@ public class Main {
         int epicId2 = ((manager.InMemoryTasksManager) tasksManager).generateId();
         Epic circusTrick = new Epic(epicId2,"Эпик 2", "Научиться жонглировать");
 
-        tasksManager.addEpicToList(driverLicenseTask);
         tasksManager.addEpicToList(circusTrick);
 
         System.out.println();
