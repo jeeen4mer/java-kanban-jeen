@@ -50,6 +50,7 @@ public class Task {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public TaskStatus getTaskStatus() {
         return taskStatus;
     }
