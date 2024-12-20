@@ -13,7 +13,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if(historyList.contains(task)){
+        if (historyList.contains(task)) {
             historyList.remove(task);
         }
 
@@ -36,7 +36,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void clearHistoryList(){
+    public void clearHistoryList() {
         historyList.clear();
     }
 }
