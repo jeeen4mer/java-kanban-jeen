@@ -4,7 +4,6 @@ import model.*;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,7 +130,6 @@ public class InMemoryTasksManager implements TaskManager {
 
         removeTaskFromHistoryList(idToRemove);
     }
-
 
     @Override
     public void removeSubtasksOfEpic(int id) {
