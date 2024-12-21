@@ -27,7 +27,7 @@ public class InMemoryTasksManager implements TaskManager {
         for (Epic epic : epicsList.values()) {
             allTasksList.add(epic);
             int epicId = epic.getId();
-            ArrayList<SubTask> subtaskListForCopy = getAllSubtaskOfEpic(epicId);
+            List<SubTask> subtaskListForCopy = getAllSubtaskOfEpic(epicId);
             allTasksList.addAll(subtaskListForCopy);
         }
 
@@ -78,7 +78,7 @@ public class InMemoryTasksManager implements TaskManager {
     public void addSubTaskToList(SubTask newSubtask) {
         newSubtask.setId(generateId());
         subtasksList.put(newSubtask.getId(), newSubtask);
-        if(epicsList.containsKey(newSubtask.getRelationEpicId())){
+        if (epicsList.containsKey(newSubtask.getRelationEpicId())) {
             Epic relatedEpic = epicsList.get(newSubtask.getRelationEpicId());
             relatedEpic.addSubTaskIdToEpic(newSubtask.getId());
         }
@@ -127,12 +127,12 @@ public class InMemoryTasksManager implements TaskManager {
             tasksList.remove(idToRemove);
         }
 
-        if (subtasksList.containsKey(idToRemove)) {
-            subtasksList.remove(idToRemove);
-        }
         if (epicsList.containsKey(idToRemove)) {
             epicsList.remove(idToRemove);
             removeSubtasksOfEpic(idToRemove);
+        }
+        if (subtasksList.containsKey(idToRemove)) {
+            subtasksList.remove(idToRemove);
         }
 
         removeTaskFromHistoryList(idToRemove);
@@ -150,12 +150,11 @@ public class InMemoryTasksManager implements TaskManager {
 
         for (Integer idToRemove : idSubtasksToRemove) {
             subtasksList.remove(idToRemove);
-            removeTaskFromHistoryList(idToRemove);
         }
     }
 
     @Override
-    public ArrayList<SubTask> getAllSubtaskOfEpic(int id) {
+    public List<SubTask> getAllSubtaskOfEpic(int id) {
         ArrayList<SubTask> epicRelatedSubtasks = new ArrayList<>();
         for (SubTask subtask : subtasksList.values()) {
             if (subtask.getRelationEpicId() == id) {
@@ -178,7 +177,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     // Метод для получения нового id
-    private int generateId(){
+    private int generateId() {
         return ++idCounter;
     }
 }

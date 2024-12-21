@@ -6,7 +6,7 @@ public class SubTask extends Task {
 
     private int relationEpicId;
 
-    public SubTask(String name, String description){
+    public SubTask(String name, String description) {
         super(name, description);
     }
 
@@ -14,15 +14,8 @@ public class SubTask extends Task {
         return relationEpicId;
     }
 
-    public void setRelationEpicId(SubTask subtask) {
-        if(subtask == this) {
-            this.relationEpicId = -1;
-        }
-        this.relationEpicId = subtask.getRelationEpicId();
 
-    }
-
-    public void setRelationEpicId(int relationEpicId){
+    public void setRelationEpicId(int relationEpicId) {
         this.relationEpicId = relationEpicId;
     }
 
@@ -33,6 +26,7 @@ public class SubTask extends Task {
         SubTask subTask = (SubTask) o;
         return Objects.equals(id, subTask.id);
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

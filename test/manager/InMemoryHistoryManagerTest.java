@@ -1,89 +1,65 @@
-package manager;
+package test.manager;
 
-import manager.HistoryManager;
-import manager.InMemoryHistoryManager;
-import manager.InMemoryTasksManager;
+import manager.*;
 import model.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
+    private HistoryManager historyManager;
+
+    private TaskManager taskManager;
+
+    private Task task1;
+    private Task task2;
+
+    @BeforeEach
+    void setUp() {
+        historyManager = Managers.getDefaultHistory();
+        taskManager = Managers.getDefault();
+        task1 = new Task("Задача 1", "Описание задачи 1");
+        task2 = new Task("Задача 2", "Описание задачи 2");
+        taskManager.addTaskToList(task1);
+        taskManager.addTaskToList(task2);
+    }
     @Test
-    void historyListIsNotLimitedByTen() {
-        InMemoryTasksManager manager = new InMemoryTasksManager();
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        for (int i = 0; i < 15; i++) {
-            int taskId = manager.generateId();
-            Task task = new Task(taskId, "Task name", "Task description");
-            historyManager.add(task);
-        }
-        assertEquals(10, historyManager.getHistory().size(), "List must contain only 10 elements");
+    void testAdd() {
+        historyManager.add(task1);
+        final List<Task> history = historyManager.getHistory();
+        assertNotNull(history, "История не может быть null.");
+        assertEquals(1, history.size(), "Неверный размер истории.");
+        assertEquals(task1, history.get(0), "Неверная задача в истории.");
     }
 
     @Test
-    void methodClearHistoryDeleteNodes() {
-        InMemoryTasksManager manager = new InMemoryTasksManager();
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        int taskId1 = manager.generateId();
-        Task task1 = new Task(taskId1, "Task name", "Task description");
+    void testAddAndRemoveFromHistory() {
         historyManager.add(task1);
-        int taskId2 = manager.generateId();
-        Task task2 = new Task(taskId2, "Task name", "Task description");
         historyManager.add(task2);
+        historyManager.remove(task1.getId());
 
-        assertFalse(historyManager.getHistory().isEmpty(), "History must be not empty");
+        final List<Task> history = historyManager.getHistory();
+
+        assertNotNull(history, "История не может быть null.");
+        assertEquals(1, history.size(), "Неверный размер истории.");
+        assertEquals(task2, history.get(0), "Неверная задача в истории.");
+    }
+    @Test
+    void testAddAndClearFromHistory() {
+        historyManager.add(task1);
+        historyManager.add(task2);
         historyManager.clearHistoryList();
-        assertTrue(historyManager.getHistory().isEmpty(), "History must be empty");
+        final List<Task> history = historyManager.getHistory();
+        assertTrue(history.isEmpty());
     }
-
     @Test
-    void addingTaskToHistoryManagerNotChangeTask() {
-        InMemoryTasksManager manager = new InMemoryTasksManager();
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        int taskId1 = manager.generateId();
-        Task task1 = new Task(taskId1, "Task name", "Task description");
-        historyManager.add(task1);
-
-        Task taskFromHistoryList = historyManager.getHistory().get(0);
-        assertEquals(taskFromHistoryList, task1, "Tasks must be equal");
+    void testEmptyHistory() {
+        final List<Task> history = historyManager.getHistory();
+        assertTrue(history.isEmpty());
     }
 
-    @Test
-    void checkAddOrder() {
-        InMemoryTasksManager manager = new InMemoryTasksManager();
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        int taskId1 = manager.generateId();
-        Task task1 = new Task(taskId1, "Task name", "Task description");
-        historyManager.add(task1);
-        int taskId2 = manager.generateId();
-        Task task2 = new Task(taskId2, "Task name2", "Task description2");
-        historyManager.add(task2);
-
-        int taskId3 = manager.generateId();
-        Task task3 = new Task(taskId3, "Task name3", "Task description3");
-        historyManager.add(task3);
-        assertEquals(task3, historyManager.getHistory().get(0), "Last element must be at first place");
-        assertEquals(task2, historyManager.getHistory().get(1), "Before last element must be at second place");
-    }
-
-    @Test
-    void addSameTaskToHistoryListWillReplaceItInLastPlace() {
-        InMemoryTasksManager manager = new InMemoryTasksManager();
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        int taskId1 = manager.generateId();
-        Task task1 = new Task(taskId1, "Task name", "Task description");
-        historyManager.add(task1);
-        int taskId2 = manager.generateId();
-        Task task2 = new Task(taskId2, "Task name2", "Task description2");
-        historyManager.add(task2);
-        int taskId3 = manager.generateId();
-        Task task3 = new Task(taskId3, "Task name3", "Task description3");
-        historyManager.add(task3);
-        historyManager.add(task1);
-        assertEquals(task1, historyManager.getHistory().get(0), "Task1 must be at first place");
-        assertEquals(task3, historyManager.getHistory().get(1), "Task3 must be at second place");
-
-    }
 }

@@ -31,6 +31,10 @@ public class Main {
         driverLicenseSubtask2.setRelationEpicId(driverLicenseTask.getId());
         driverLicenseSubtask3.setRelationEpicId(driverLicenseTask.getId());
 
+        driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask1.getId());
+        driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask2.getId());
+        driverLicenseTask.addSubTaskIdToEpic(driverLicenseSubtask3.getId());
+
 
         Epic circusTrick = new Epic("Эпик 2", "Научиться жонглировать");
 

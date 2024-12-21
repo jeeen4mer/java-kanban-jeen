@@ -10,39 +10,34 @@ public class Task extends Node {
     protected TaskStatus taskStatus = TaskStatus.NEW;
 
 
-    public Task(int id, String name, String description) {
-        super(id, name, description);
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-
-    public Task(String name, String description){
+    public Task(String name, String description) {
         super(name, description);
         this.name = name;
         this.description = description;
     }
 
-    public void setId(int id){
+
+    public void setId(int id) {
         this.id = id;
     }
+
     public Integer getId() {
         return id;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description){
+    public void setDescription(String description) {
         this.description = description;
     }
 

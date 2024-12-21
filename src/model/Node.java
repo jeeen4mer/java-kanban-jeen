@@ -7,18 +7,16 @@ public class Node {
     protected String name;
     protected String description;
 
-    public Node(Integer id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-    public Node( String name, String description) {
-
+    public Node(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Integer getId(){
+    public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id){
+        this.id = id;
     }
 }
