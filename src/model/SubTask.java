@@ -24,12 +24,12 @@ public class SubTask extends Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubTask subTask = (SubTask) o;
-        return Objects.equals(id, subTask.id);
+        return Objects.equals(id, subTask.id) && Objects.equals(name, subTask.name) && Objects.equals(description, subTask.description) && taskStatus == subTask.taskStatus && relationEpicId == subTask.relationEpicId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name, description, taskStatus, relationEpicId);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SubTask extends Task {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + taskStatus + '\'' +
+                ", status=" + taskStatus +
                 ", relatedEpic id=" + relationEpicId +
                 '}';
     }

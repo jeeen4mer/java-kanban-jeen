@@ -94,32 +94,44 @@ public class InMemoryTasksManager implements TaskManager {
                 updatedTask.setTaskStatus(TaskStatus.DONE);
         }
 
-        if (updatedTask.getClass().getName().equals("model.SubTask")) {
-            SubTask updatedTaskCopy = (SubTask) updatedTask;
-            Epic relatedEpic = epicsList.get(updatedTaskCopy.getRelationEpicId());
-            checkAndSetEpicStatus(relatedEpic.getId());
+
+        if (updatedTask instanceof SubTask) {
+            SubTask subtask = (SubTask) updatedTask;
+            if (epicsList.containsKey(subtask.getRelationEpicId())) {
+                checkAndSetEpicStatus(subtask.getRelationEpicId());
+            }
         }
     }
+
 
     @Override
     public void checkAndSetEpicStatus(int epicId) {
-        boolean isAllSubtasksDone = true;
-
+        Epic epic = epicsList.get(epicId);
+        if (epic == null) {
+            return;
+        }
+        boolean allSubtasksDone = true;
+        boolean hasInProgressSubtasks = false;
         for (SubTask subtask : subtasksList.values()) {
             if (subtask.getRelationEpicId() == epicId) {
-                if (subtask.getTaskStatus().equals(TaskStatus.NEW) ||
-                        subtask.getTaskStatus().equals(TaskStatus.IN_PROGRESS)) {
-                    isAllSubtasksDone = false;
-                    break;
+                if (subtask.getTaskStatus() == TaskStatus.NEW || subtask.getTaskStatus() == TaskStatus.IN_PROGRESS) {
+                    allSubtasksDone = false;
+                }
+                if(subtask.getTaskStatus() == TaskStatus.IN_PROGRESS) {
+                    hasInProgressSubtasks = true;
                 }
             }
         }
-        if (isAllSubtasksDone) {
-            epicsList.get(epicId).setTaskStatus(TaskStatus.DONE);
-        } else {
-            epicsList.get(epicId).setTaskStatus(TaskStatus.IN_PROGRESS);
+        if (allSubtasksDone) {
+            epic.setTaskStatus(TaskStatus.DONE);
+        } else if (hasInProgressSubtasks) {
+            epic.setTaskStatus(TaskStatus.IN_PROGRESS);
+        }
+        else {
+            epic.setTaskStatus(TaskStatus.NEW);
         }
     }
+
 
     @Override
     public void deleteById(int idToRemove) {

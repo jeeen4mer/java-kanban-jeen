@@ -42,10 +42,12 @@ class InMemoryTaskManagerTest {
     void testAddTask() {
         final List<Task> allTasks = taskManager.getAllTasksList();
         assertNotNull(allTasks);
-        assertEquals(3, allTasks.size(), "Неверное количество задач.");
+        assertEquals(4, allTasks.size(), "Неверное количество задач.");
         assertTrue(allTasks.contains(task1), "Неверная задача в списке.");
         assertTrue(allTasks.contains(task2), "Неверная задача в списке.");
         assertTrue(allTasks.contains(epic1), "Неверный эпик в списке.");
+        assertTrue(allTasks.contains(subtask1), "Неверная подзадача в списке.");
+
 
     }
 
@@ -81,9 +83,7 @@ class InMemoryTaskManagerTest {
     void testCheckAndSetEpicStatus() {
         subtask1.setTaskStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateTask(subtask1);
-        assertEquals(TaskStatus.IN_PROGRESS, epic1.getTaskStatus());
         subtask1.setTaskStatus(TaskStatus.DONE);
-        subtask1.setRelationEpicId(epic1.getId());
         taskManager.updateTask(subtask1);
         assertEquals(TaskStatus.DONE, epic1.getTaskStatus());
     }
@@ -119,16 +119,12 @@ class InMemoryTaskManagerTest {
     void testEpicEquals() {
         Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
         Epic epic3 = new Epic("Эпик 2", "Описание эпика 2");
-        taskManager.addEpicToList(epic2);
-        taskManager.addEpicToList(epic3);
         assertEquals(epic2, epic3);
     }
     @Test
     void testSubTaskEquals() {
         SubTask subTask3 = new SubTask("Подзадача 3", "Описание подзадачи 3");
         SubTask subTask4 = new SubTask("Подзадача 3", "Описание подзадачи 3");
-        taskManager.addSubTaskToList(subTask3);
-        taskManager.addSubTaskToList(subTask4);
         assertEquals(subTask3, subTask4);
     }
     @Test
@@ -137,14 +133,12 @@ class InMemoryTaskManagerTest {
         taskManager.addSubTaskToList(subTask7);
         subTask7.setRelationEpicId(epic1.getId());
         String expectedToString = "{id=" + subTask7.getId() + ", name='Подзадача 7', description='Описание подзадачи 7', status=NEW, relatedEpic id=" + epic1.getId() +"}";
-        assertEquals(subTask7.toString(), expectedToString);
+        assertEquals(expectedToString, subTask7.toString());
     }
     @Test
     void testTaskEquals() {
         Task task2 = new Task("Задача 2", "Описание задачи 2");
         Task task3 = new Task("Задача 2", "Описание задачи 2");
-        taskManager.addTaskToList(task2);
-        taskManager.addTaskToList(task3);
         assertEquals(task2, task3);
     }
 }

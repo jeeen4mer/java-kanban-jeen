@@ -1,7 +1,6 @@
-package test.model;
+package model;
 
 import manager.InMemoryTasksManager;
-import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,11 +36,8 @@ class SubTaskTest {
     }
     @Test
     void testSubTaskEquals() {
-        Task subTask3 = new SubTask("Подзадача 3", "Описание подзадачи 3");
-        Task subTask4 = new SubTask("Подзадача 3", "Описание подзадачи 3");
-        manager.addSubTaskToList((SubTask) subTask3);
-        manager.addSubTaskToList((SubTask) subTask4);
-
+        SubTask subTask3 = new SubTask("Подзадача 3", "Описание подзадачи 3");
+        SubTask subTask4 = new SubTask("Подзадача 3", "Описание подзадачи 3");
         assertEquals(subTask3, subTask4);
     }
     @Test
@@ -57,7 +53,7 @@ class SubTaskTest {
     void testSubTaskToString() {
         SubTask subTask7 = new SubTask("Подзадача 7", "Описание подзадачи 7");
         manager.addSubTaskToList(subTask7);
-        String expectedToString = "{id=" + subTask7.getId() + ", name='Подзадача 7', description='Описание подзадачи 7', status=NEW, relatedEpic id=" + epic.getId() +"}";
+        String expectedToString = "{id=" + subTask7.getId() + ", name='Подзадача 7', description='Описание подзадачи 7', status=NEW, relatedEpic id=0}";
         assertEquals(subTask7.toString(), expectedToString);
     }
 

@@ -1,8 +1,6 @@
-package test.model;
+package model;
 
 import manager.InMemoryTasksManager;
-import model.Task;
-import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +32,6 @@ class TaskTest {
     void testTaskEquals() {
         Task task2 = new Task("Задача 2", "Описание задачи 2");
         Task task3 = new Task("Задача 2", "Описание задачи 2");
-        manager.addTaskToList(task2);
-        manager.addTaskToList(task3);
         assertEquals(task2, task3);
     }
     @Test
@@ -51,6 +47,4 @@ class TaskTest {
         String expectedToString = "{id=" + task1.getId() + ", name='Задача 1', description='Описание задачи 1', status=NEW}";
         assertEquals(task1.toString(), expectedToString);
     }
-
-
 }

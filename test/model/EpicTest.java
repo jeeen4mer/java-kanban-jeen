@@ -1,8 +1,6 @@
-package test.model;
+package model;
 
 import manager.InMemoryTasksManager;
-import model.Epic;
-import model.SubTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +34,6 @@ class EpicTest {
     void testEpicEquals() {
         Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
         Epic epic3 = new Epic("Эпик 2", "Описание эпика 2");
-        manager.addEpicToList(epic2);
-        manager.addEpicToList(epic3);
         assertEquals(epic2, epic3);
     }
     @Test
