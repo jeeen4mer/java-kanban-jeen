@@ -108,7 +108,7 @@ public class InMemoryTasksManager implements TaskManager {
     public void checkAndSetEpicStatus(int epicId) {
         Epic epic = epicsList.get(epicId);
         if (epic == null) {
-            return;
+             return;
         }
         boolean allSubtasksDone = true;
         boolean hasInProgressSubtasks = false;
@@ -118,7 +118,7 @@ public class InMemoryTasksManager implements TaskManager {
                     allSubtasksDone = false;
                 }
                 if (subtask.getTaskStatus() == TaskStatus.IN_PROGRESS) {
-                    hasInProgressSubtasks = true;
+                     hasInProgressSubtasks = true;
                 }
             }
         }
