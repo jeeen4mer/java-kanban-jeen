@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Objects;
-
 public class Node {
     protected Integer id;
     protected String name;
@@ -16,7 +14,7 @@ public class Node {
         return id;
     }
 
-    public void setId(Integer id){
+    public void setId(Integer id) {
         this.id = id;
     }
 }
