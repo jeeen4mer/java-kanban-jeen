@@ -126,7 +126,8 @@ public class InMemoryTasksManager implements TaskManager {
             epic.setTaskStatus(TaskStatus.DONE);
         } else if (hasInProgressSubtasks) {
             epic.setTaskStatus(TaskStatus.IN_PROGRESS);
-        } else {
+        }
+        else {
             epic.setTaskStatus(TaskStatus.NEW);
         }
     }
