@@ -1,41 +1,24 @@
 package model;
 
-public class Node<T> {
-    private T data;
-    private Node<T> prev;
-    private Node<T> next;
+import java.util.Objects;
 
-    public Node(T data) {
-        this.data = data;
-        this.prev = null;
-        this.next = null;
+public class Node {
+    protected Integer id;
+    protected String name;
+    protected String description;
+
+    public Node(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+    public Node( String name, String description) {
+
+        this.name = name;
+        this.description = description;
     }
 
-    public T getTask() {
-        return data;
-    }
-
-    public Node<T> getPrev() {
-        return prev;
-    }
-
-    public void setPrev(Node<T> prev) {
-        this.prev = prev;
-    }
-
-    public void setPrevNull() {
-        this.prev = null;
-    }
-
-    public Node<T> getNext() {
-        return next;
-    }
-
-    public void setNext(Node<T> next) {
-        this.next = next;
-    }
-
-    public void setNextNull() {
-        this.next = null;
+    public Integer getId(){
+        return id;
     }
 }

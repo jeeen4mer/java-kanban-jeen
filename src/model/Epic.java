@@ -1,38 +1,48 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subTasks;
 
-    //Конструктор для создания новых объектов, id получаем в InMemoryTasksManager
-    public Epic(String name, String description) {
-        super(name, description);
-        subTasks = new ArrayList<>();
-    }
+    private ArrayList<Integer> subTaskIds = new ArrayList<>();
 
-    //Конструктор для загрузки данных из файла. id задается из файла
-    public Epic(String name, String description, int id) {
-        super(name, description, id);
-        subTasks = new ArrayList<>();
-    }
-
-    //Конструктор для id
-    public Epic(int id, String name, String description) {
+    public Epic(int id,String name, String description) {
         super(id, name, description);
-        subTasks = new ArrayList<>();
     }
 
-    public ArrayList<Integer> getSubTasks() {
-        return subTasks;
+    public Epic(String name, String description){
+        super(name, description);
     }
 
-    public int addSubTaskIdToEpic(Task task) {
-        if (task.getId().equals(this.getId())) {
-            return -1;
-        }
-        this.subTasks.add(task.getId());
-        task.setRelationEpicId(this);
-        return 1;
+    public ArrayList<Integer> getSubTaskIds() {
+        return subTaskIds;
+    }
+
+    public void addSubTaskIdToEpic(int subtaskId) {
+        subTaskIds.add(subtaskId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(id, epic.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + taskStatus +
+                '}';
     }
 }

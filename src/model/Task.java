@@ -2,53 +2,48 @@ package model;
 
 import java.util.Objects;
 
-public class Task {
-    private String name;
-    private String description;
-    private Integer id;
-    private TaskStatus taskStatus;
-    private int relationEpicId;
+public class Task extends Node {
 
-    public Task(String name, String description) {
-        this.taskStatus = TaskStatus.NEW;
-        this.name = name;
-        this.description = description;
-    }
+    protected Integer id;
+    protected String name;
+    protected String description;
+    protected TaskStatus taskStatus = TaskStatus.NEW;
 
-    public Task(String name, String description, int id) {
-        this(name, description);
-        this.id = id;
-    }
 
     public Task(int id, String name, String description) {
+        super(id, name, description);
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Task(String name, String description){
+        super(name, description);
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
     }
 
+    public void setId(int id){
+        this.id = id;
+    }
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
     }
 
     public TaskStatus getTaskStatus() {
@@ -57,12 +52,6 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "{id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status="
-                + getTaskStatus() + "'}\n";
     }
 
     @Override
@@ -78,15 +67,13 @@ public class Task {
         return Objects.hash(id);
     }
 
-    public int getRelationEpicId() {
-        return relationEpicId;
-    }
-
-    public int setRelationEpicId(Task epicTask) {
-        if (epicTask.getId().equals(this.getId())) {
-            return -1;
-        }
-        this.relationEpicId = epicTask.getId();
-        return 1;
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + taskStatus +
+                '}';
     }
 }

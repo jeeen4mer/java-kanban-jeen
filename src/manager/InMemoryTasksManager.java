@@ -64,17 +64,24 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void addTaskToList(Task newTask) {
+        newTask.setId(generateId());
         tasksList.put(newTask.getId(), newTask);
     }
 
     @Override
     public void addEpicToList(Epic newEpic) {
+        newEpic.setId(generateId());
         epicsList.put(newEpic.getId(), newEpic);
     }
 
     @Override
     public void addSubTaskToList(SubTask newSubtask) {
+        newSubtask.setId(generateId());
         subtasksList.put(newSubtask.getId(), newSubtask);
+        if(epicsList.containsKey(newSubtask.getRelationEpicId())){
+            Epic relatedEpic = epicsList.get(newSubtask.getRelationEpicId());
+            relatedEpic.addSubTaskIdToEpic(newSubtask.getId());
+        }
     }
 
     @Override
@@ -133,7 +140,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeSubtasksOfEpic(int id) {
-         ArrayList<Integer> idSubtasksToRemove = new ArrayList<>();
+        ArrayList<Integer> idSubtasksToRemove = new ArrayList<>();
 
         for (SubTask subtaskToCheck : subtasksList.values()) {
             if (subtaskToCheck.getRelationEpicId() == id) {
@@ -143,7 +150,7 @@ public class InMemoryTasksManager implements TaskManager {
 
         for (Integer idToRemove : idSubtasksToRemove) {
             subtasksList.remove(idToRemove);
-             removeTaskFromHistoryList(idToRemove);
+            removeTaskFromHistoryList(idToRemove);
         }
     }
 
@@ -171,7 +178,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     // Метод для получения нового id
-    public int generateId() {
+    private int generateId(){
         return ++idCounter;
     }
 }

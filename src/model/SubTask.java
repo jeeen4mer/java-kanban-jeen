@@ -1,25 +1,51 @@
 package model;
 
+import java.util.Objects;
+
 public class SubTask extends Task {
 
-    //Конструктор для создания новых объектов, id получаем в InMemoryTasksManager
-    public SubTask(String name, String description) {
+    private int relationEpicId;
+
+    public SubTask(String name, String description){
         super(name, description);
     }
 
-    //Конструктор для загрузки данных из файла. id задается из файла
-    public SubTask(String name, String description, int id) {
-        super(name, description, id);
+    public int getRelationEpicId() {
+        return relationEpicId;
     }
 
-    //Конструктор для id
-    public SubTask(int id, String name, String description) {
-        super(id, name, description);
+    public void setRelationEpicId(SubTask subtask) {
+        if(subtask == this) {
+            this.relationEpicId = -1;
+        }
+        this.relationEpicId = subtask.getRelationEpicId();
+
+    }
+
+    public void setRelationEpicId(int relationEpicId){
+        this.relationEpicId = relationEpicId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubTask subTask = (SubTask) o;
+        return Objects.equals(id, subTask.id);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return "{id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status="
-                + getTaskStatus() + "', relatedEpic id=" + getRelationEpicId() + "}\n";
+        return "{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + taskStatus + '\'' +
+                ", relatedEpic id=" + relationEpicId +
+                '}';
     }
 }
