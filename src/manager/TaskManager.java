@@ -26,6 +26,7 @@ public interface TaskManager {
     void removeSubtasksOfEpic(int id);
 
     List<model.SubTask> getAllSubtaskOfEpic(int id);
+
     List<Task> getHistory();
 
     void removeTaskFromHistoryList(int id);
