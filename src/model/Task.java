@@ -2,7 +2,7 @@ package model;
 
 import java.util.Objects;
 
-public class Task extends Node {
+public class Task {
 
     protected Integer id;
     protected String name;
@@ -11,7 +11,6 @@ public class Task extends Node {
 
 
     public Task(String name, String description) {
-        super(name, description);
         this.name = name;
         this.description = description;
     }
