@@ -1,36 +1,28 @@
 package manager;
 
 import model.*;
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class InMemoryTasksManager implements TaskManager {
-    private Map<Integer, Task> tasksList = new HashMap<>();
-    private Map<Integer, Epic> epicsList = new HashMap<>();
-    private Map<Integer, SubTask> subtasksList = new HashMap<>();
-
-    private int idCounter = 0; // Добавили счетчик ID
-
-
+    protected Map<Integer, Task> tasksList = new HashMap<>();
+    protected Map<Integer, Epic> epicsList = new HashMap<>();
+    protected Map<Integer, SubTask> subtasksList = new HashMap<>();
+    private int idCounter = 0; // Счётчик ID
     private HistoryManager historyManager = Managers.getDefaultHistory();
-
 
     @Override
     public List<Task> getAllTasksList() {
         List<Task> allTasksList = new ArrayList<>();
         allTasksList.addAll(tasksList.values());
-
         for (Epic epic : epicsList.values()) {
             allTasksList.add(epic);
             int epicId = epic.getId();
             List<SubTask> subtaskListForCopy = getAllSubtaskOfEpic(epicId);
             allTasksList.addAll(subtaskListForCopy);
         }
-
         return allTasksList;
     }
 
@@ -50,13 +42,11 @@ public class InMemoryTasksManager implements TaskManager {
             historyManager.add(foundTask);
             return foundTask;
         }
-
         if (epicsList.containsKey(idToFind)) {
             foundTask = epicsList.get(idToFind);
             historyManager.add(foundTask);
             return foundTask;
         }
-
         foundTask = subtasksList.get(idToFind);
         historyManager.add(foundTask);
         return foundTask;
@@ -93,8 +83,6 @@ public class InMemoryTasksManager implements TaskManager {
             case IN_PROGRESS:
                 updatedTask.setTaskStatus(TaskStatus.DONE);
         }
-
-
         if (updatedTask instanceof SubTask) {
             SubTask subtask = (SubTask) updatedTask;
             if (epicsList.containsKey(subtask.getRelationEpicId())) {
@@ -103,13 +91,11 @@ public class InMemoryTasksManager implements TaskManager {
         }
     }
 
-
     @Override
     public void checkAndSetEpicStatus(int epicId) {
         Epic epic = epicsList.get(epicId);
-
         if (epic == null) {
-             return;
+            return;
         }
         boolean allSubtasksDone = true;
         boolean hasInProgressSubtasks = false;
@@ -132,13 +118,11 @@ public class InMemoryTasksManager implements TaskManager {
         }
     }
 
-
     @Override
     public void deleteById(int idToRemove) {
         if (tasksList.containsKey(idToRemove)) {
             tasksList.remove(idToRemove);
         }
-
         if (epicsList.containsKey(idToRemove)) {
             epicsList.remove(idToRemove);
             removeSubtasksOfEpic(idToRemove);
@@ -146,20 +130,17 @@ public class InMemoryTasksManager implements TaskManager {
         if (subtasksList.containsKey(idToRemove)) {
             subtasksList.remove(idToRemove);
         }
-
         removeTaskFromHistoryList(idToRemove);
     }
 
     @Override
     public void removeSubtasksOfEpic(int id) {
         ArrayList<Integer> idSubtasksToRemove = new ArrayList<>();
-
         for (SubTask subtaskToCheck : subtasksList.values()) {
             if (subtaskToCheck.getRelationEpicId() == id) {
                 idSubtasksToRemove.add(subtaskToCheck.getId());
             }
         }
-
         for (Integer idToRemove : idSubtasksToRemove) {
             subtasksList.remove(idToRemove);
         }
@@ -173,13 +154,11 @@ public class InMemoryTasksManager implements TaskManager {
                 epicRelatedSubtasks.add(subtask);
             }
         }
-
         return epicRelatedSubtasks;
     }
 
     @Override
     public List<Task> getHistory() {
-
         return historyManager.getHistory();
     }
 
@@ -188,7 +167,6 @@ public class InMemoryTasksManager implements TaskManager {
         historyManager.remove(id);
     }
 
-    // Метод для получения нового id
     private int generateId() {
         return ++idCounter;
     }
