@@ -1,8 +1,13 @@
 package manager;
 
+import java.io.File;
+
 public class Managers {
+    private static final String FILE_PATH = "tasks.csv";
+
     public static TaskManager getDefault() {
-        return new InMemoryTasksManager();
+        File file = new File(FILE_PATH);
+        return new FileBackedTaskManager(file);
     }
 
     public static HistoryManager getDefaultHistory() {
