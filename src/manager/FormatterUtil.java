@@ -3,7 +3,9 @@ package manager;
 import model.*;
 
 public final class FormatterUtil {
-    private FormatterUtil() {}
+
+    private FormatterUtil() {
+    }
 
     public static String taskToString(Task task) {
         StringBuilder sb = new StringBuilder();
