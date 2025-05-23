@@ -98,7 +98,8 @@ public class FileBackedTaskManager extends InMemoryTasksManager {
                         if (historyTask != null) {
                             manager.historyManager.add(historyTask);
                         }
-                    } catch (NumberFormatException ignored) {}
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
                 if (line.equals("# HISTORY")) {
                     isHistory = true;
