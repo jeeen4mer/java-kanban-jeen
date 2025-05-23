@@ -9,7 +9,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public final class FormatterUtil {
-    private FormatterUtil() {}
+    private FormatterUtil() {
+    }
 
     public static String taskToString(Task task) {
         StringBuilder result = new StringBuilder();
