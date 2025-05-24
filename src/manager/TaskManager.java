@@ -30,4 +30,8 @@ public interface TaskManager {
     List<Task> getHistory();
 
     void removeTaskFromHistoryList(int id);
+
+    List<Task> getPrioritizedTasks();
+
+    boolean isOverlapping(Task newTask);
 }

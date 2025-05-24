@@ -24,16 +24,18 @@ class TaskTest {
         task1.setTaskStatus(TaskStatus.IN_PROGRESS);
         assertEquals(TaskStatus.IN_PROGRESS, task1.getTaskStatus());
 
+        task1.setTaskStatus(TaskStatus.DONE);
         manager.updateTask(task1);
         assertEquals(TaskStatus.DONE, task1.getTaskStatus());
-
     }
+
     @Test
     void testTaskEquals() {
         Task task2 = new Task("Задача 2", "Описание задачи 2");
         Task task3 = new Task("Задача 2", "Описание задачи 2");
         assertEquals(task2, task3);
     }
+
     @Test
     void testTaskHashCode() {
         Task task4 = new Task("Задача 4", "Описание задачи 4");
@@ -42,9 +44,14 @@ class TaskTest {
         manager.addTaskToList(task5);
         assertNotEquals(task4.hashCode(), task5.hashCode());
     }
+
     @Test
     void testTaskToString() {
-        String expectedToString = "{id=" + task1.getId() + ", name='Задача 1', description='Описание задачи 1', status=NEW}";
-        assertEquals(task1.toString(), expectedToString);
+        String expectedToString = "{id=" + task1.getId() +
+                ", name='Задача 1', description='Описание задачи 1', status=NEW" +
+                ", startTime=null, duration=0 мин." +
+                "}";
+
+        assertEquals(expectedToString, task1.toString());
     }
 }

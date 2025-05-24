@@ -14,8 +14,9 @@ public class FileBackedTaskManager extends InMemoryTasksManager {
 
     protected void save() {
         try (Writer writer = new FileWriter(file)) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,epic,startTime,duration\n");
 
+            // Сохраняем все задачи, включая эпики и подзадачи
             for (Task task : getAllTasksList()) {
                 writer.write(FormatterUtil.taskToString(task) + "\n");
             }
@@ -31,45 +32,85 @@ public class FileBackedTaskManager extends InMemoryTasksManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
-        boolean isHistorySection = false;
+        Map<Integer, Task> tempTasks = new HashMap<>();
 
         try {
             List<String> lines = Files.readAllLines(file.toPath());
+            if (lines.size() <= 1) {
+                return manager;
+            }
 
+            // Сначала читаем все задачи и создаем их объекты
+            boolean isHistory = false;
             for (int i = 1; i < lines.size(); i++) {
                 String line = lines.get(i).trim();
-
+                if (line.isEmpty()) {
+                    continue;
+                }
                 if (line.equals("# HISTORY")) {
-                    isHistorySection = true;
+                    isHistory = true;
                     continue;
                 }
 
-                if (!isHistorySection) {
+                if (!isHistory) {
                     Task task = FormatterUtil.taskFromString(line);
-                    if (task == null) continue;
-
-                    if (task instanceof Task && !(task instanceof Epic || task instanceof SubTask)) {
-                        manager.addTaskToList(task);
-                    } else if (task instanceof Epic) {
-                        manager.addEpicToList((Epic) task);
-                    } else if (task instanceof SubTask) {
-                        SubTask subtask = (SubTask) task;
-                        manager.addSubTaskToList(subtask);
-                        if (manager.epicsList.containsKey(subtask.getRelationEpicId())) {
-                            manager.epicsList.get(subtask.getRelationEpicId()).addSubTaskIdToEpic(subtask.getId());
-                        }
+                    if (task != null) {
+                        tempTasks.put(task.getId(), task);
                     }
-                } else {
+                }
+            }
+
+            // Теперь добавляем задачи в менеджер в правильном порядке
+            // Сначала эпики
+            for (Task task : tempTasks.values()) {
+                if (task instanceof Epic) {
+                    manager.epicsList.put(task.getId(), (Epic) task);
+                }
+            }
+
+            // Затем обычные задачи
+            for (Task task : tempTasks.values()) {
+                if (!(task instanceof Epic) && !(task instanceof SubTask)) {
+                    manager.tasksList.put(task.getId(), task);
+                }
+            }
+
+            // Наконец, подзадачи и связываем их с эпиками
+            for (Task task : tempTasks.values()) {
+                if (task instanceof SubTask) {
+                    SubTask subTask = (SubTask) task;
+                    Epic epic = manager.epicsList.get(subTask.getRelationEpicId());
+                    if (epic != null) {
+                        manager.subtasksList.put(subTask.getId(), subTask);
+                        epic.addSubTaskIdToEpic(subTask.getId());
+                        epic.updateEpicTimeAndDuration(manager.getAllSubtaskOfEpic(epic.getId()));
+                    }
+                }
+            }
+
+            // Восстанавливаем историю
+            for (int i = 1; i < lines.size(); i++) {
+                String line = lines.get(i).trim();
+                if (isHistory) {
                     try {
                         int id = Integer.parseInt(line);
-                        Task task = manager.getTaskById(id);
-                        if (task != null) {
-                            manager.historyManager.add(task);
+                        Task historyTask = manager.getTaskById(id);
+                        if (historyTask != null) {
+                            manager.historyManager.add(historyTask);
                         }
                     } catch (NumberFormatException ignored) {
                     }
                 }
+                if (line.equals("# HISTORY")) {
+                    isHistory = true;
+                }
             }
+
+            // Обновляем счетчик ID
+            int maxId = tempTasks.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
+            manager.idCounter = maxId;
+
+
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файла: " + e.getMessage());
         }
@@ -97,8 +138,11 @@ public class FileBackedTaskManager extends InMemoryTasksManager {
 
     @Override
     public void updateTask(Task updatedTask) {
-        super.updateTask(updatedTask);
-        save();
+        Task existingTask = getTaskById(updatedTask.getId());
+        if (existingTask != null) {
+            super.updateTask(updatedTask);
+            save();
+        }
     }
 
     @Override
@@ -111,5 +155,11 @@ public class FileBackedTaskManager extends InMemoryTasksManager {
     public void deleteAllTasks() {
         super.deleteAllTasks();
         save();
+    }
+
+    @Override
+    public void checkAndSetEpicStatus(int epicId) {
+        super.checkAndSetEpicStatus(epicId);
+        save(); // Сохраняем изменения после обновления статуса
     }
 }
