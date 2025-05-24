@@ -32,12 +32,12 @@ public class Main {
 
         SubTask driverLicenseSubtask2 = new SubTask("Подзадача 2", "Подготовиться к экзамену");
         driverLicenseSubtask2.setRelationEpicId(driverLicenseTask.getId());
-        driverLicenseSubtask2.setStartTime(LocalDateTime.now().plusHours(2));
+        driverLicenseSubtask2.setStartTime(LocalDateTime.now().plusHours(4));
         driverLicenseSubtask2.setDuration(Duration.ofMinutes(90));
 
         SubTask driverLicenseSubtask3 = new SubTask("Подзадача 3", "Сдать экзамен");
         driverLicenseSubtask3.setRelationEpicId(driverLicenseTask.getId());
-        driverLicenseSubtask3.setStartTime(LocalDateTime.now().plusHours(3));
+        driverLicenseSubtask3.setStartTime(LocalDateTime.now().plusHours(6));
         driverLicenseSubtask3.setDuration(Duration.ofMinutes(120));
 
         tasksManager.addSubTaskToList(driverLicenseSubtask1);

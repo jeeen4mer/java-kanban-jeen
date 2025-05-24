@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
     protected Integer id;
     protected String name;
     protected String description;
@@ -103,5 +103,19 @@ public class Task {
                 ", startTime=" + (startTime != null ? startTime.toString() : "null") +
                 ", duration=" + (duration != null ? duration.toMinutes() + " мин." : "null") +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Task other) {
+        if (this.startTime == null && other.startTime == null) {
+            return this.id.compareTo(other.id);
+        }
+        if (this.startTime == null) {
+            return 1; // Задачи без времени идут в конец
+        }
+        if (other.startTime == null) {
+            return -1; // Задачи без времени идут в конец
+        }
+        return this.startTime.compareTo(other.startTime);
     }
 }
