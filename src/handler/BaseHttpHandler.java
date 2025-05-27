@@ -49,7 +49,9 @@ public abstract class BaseHttpHandler implements HttpHandler {
     }
 
     protected abstract void handleGet(HttpExchange exchange, String path) throws IOException;
+
     protected abstract void handlePost(HttpExchange exchange, String path) throws IOException;
+
     protected abstract void handleDelete(HttpExchange exchange, String path) throws IOException;
 
     protected String readRequestBody(HttpExchange exchange) throws IOException {
