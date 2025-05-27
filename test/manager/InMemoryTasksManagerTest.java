@@ -34,8 +34,10 @@ class InMemoryTaskManagerTest {
         taskManager.addTaskToList(task1);
         taskManager.addTaskToList(task2);
         taskManager.addEpicToList(epic1);
-        taskManager.addSubTaskToList(subtask1);
+        // Сначала устанавливаем relationEpicId
         subtask1.setRelationEpicId(epic1.getId());
+        // Потом добавляем подзадачу
+        taskManager.addSubTaskToList(subtask1);
     }
 
     @Test
@@ -76,9 +78,9 @@ class InMemoryTaskManagerTest {
     void testUpdateTask() {
         task1.setTaskStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateTask(task1);
-        assertEquals(TaskStatus.DONE, task1.getTaskStatus(), "Неверный статус после обновления");
-
+        assertEquals(TaskStatus.IN_PROGRESS, task1.getTaskStatus(), "Неверный статус после обновления");
     }
+
     @Test
     void testCheckAndSetEpicStatus() {
         subtask1.setTaskStatus(TaskStatus.IN_PROGRESS);
