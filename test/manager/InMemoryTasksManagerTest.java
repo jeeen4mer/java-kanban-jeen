@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class InMemoryTaskManagerTest {
+class InMemoryTasksManagerTest {
 
     private TaskManager taskManager;
 
@@ -56,9 +56,16 @@ class InMemoryTaskManagerTest {
     @Test
     void testDeleteAllTasks() {
         taskManager.deleteAllTasks();
+
+        // Отладочная информация
+        System.out.println("После удаления:");
+        System.out.println("Размер списка всех задач: " + taskManager.getAllTasksList().size());
+        System.out.println("Размер истории: " + taskManager.getHistory().size());
+
         assertTrue(taskManager.getAllTasksList().isEmpty(), "Список задач не пуст.");
         assertTrue(taskManager.getHistory().isEmpty(), "История не пуста");
     }
+
 
     @Test
     void testGetTaskById() {

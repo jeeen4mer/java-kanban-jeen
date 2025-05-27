@@ -4,18 +4,19 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Task implements Comparable<Task> {
-    protected Integer id;
+public class Task {
+    protected int id;
     protected String name;
     protected String description;
-    protected TaskStatus taskStatus = TaskStatus.NEW;
-
+    protected TaskStatus taskStatus;
     protected LocalDateTime startTime;
-    protected Duration duration = Duration.ofMinutes(0);
+    protected Duration duration;
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.taskStatus = TaskStatus.NEW;
+        this.id = 0;
     }
 
     public Task(String name, String description, LocalDateTime startTime, Duration duration) {
@@ -24,7 +25,7 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -73,7 +74,9 @@ public class Task implements Comparable<Task> {
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null || duration == null) return null;
+        if (startTime == null || duration == null) {
+            return null;
+        }
         return startTime.plus(duration);
     }
 
@@ -82,40 +85,27 @@ public class Task implements Comparable<Task> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(id, task.id) &&
+        return id == task.id &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(description, task.description) &&
-                taskStatus == task.taskStatus;
+                taskStatus == task.taskStatus &&
+                Objects.equals(startTime, task.startTime) &&
+                Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, taskStatus);
+        return Objects.hash(id, name, description, taskStatus, startTime, duration);
     }
 
     @Override
     public String toString() {
-        return "{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + taskStatus +
-                ", startTime=" + (startTime != null ? startTime.toString() : "null") +
-                ", duration=" + (duration != null ? duration.toMinutes() + " мин." : "null") +
-                '}';
-    }
-
-    @Override
-    public int compareTo(Task other) {
-        if (this.startTime == null && other.startTime == null) {
-            return this.id.compareTo(other.id);
-        }
-        if (this.startTime == null) {
-            return 1; // Задачи без времени идут в конец
-        }
-        if (other.startTime == null) {
-            return -1; // Задачи без времени идут в конец
-        }
-        return this.startTime.compareTo(other.startTime);
+        return "{id=" + id +
+                ", name='" + name +
+                "', description='" + description +
+                "', status=" + taskStatus +
+                ", startTime=" + startTime +
+                ", duration=" + (duration != null ? duration.toMinutes() : 0) + " мин." +
+                "}";
     }
 }

@@ -26,21 +26,14 @@ public class SubTask extends Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Task)) return false;
-
-        Task other = (Task) o;
-
-        return Objects.equals(id, other.id) &&
-                Objects.equals(name, other.name) &&
-                Objects.equals(description, other.description) &&
-                taskStatus == other.taskStatus &&
-                Objects.equals(startTime, other.startTime) &&
-                Objects.equals(duration, other.duration);
+        if (!(o instanceof SubTask subTask)) return false;
+        if (!super.equals(o)) return false;
+        return relationEpicId == subTask.relationEpicId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, taskStatus, startTime, duration);
+        return Objects.hash(super.hashCode(), relationEpicId);
     }
 
     @Override
