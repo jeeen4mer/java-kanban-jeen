@@ -105,10 +105,18 @@ class FileBackedTaskManagerTest {
         Task task = new Task("Задача 1", "Описание задачи 1");
         taskManager.addTaskToList(task);
 
-        // Сохраняем исходное состояние
         TaskStatus originalStatus = task.getTaskStatus();
         task.setTaskStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateTask(task);
+
+        // Отладочный код
+        try {
+            List<String> fileContent = Files.readAllLines(tempFile.toPath());
+            System.out.println("File content:");
+            fileContent.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         TaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
         Task loadedTask = loadedManager.getTaskById(task.getId());
@@ -116,6 +124,7 @@ class FileBackedTaskManagerTest {
         assertNotNull(loadedTask);
         assertEquals(TaskStatus.IN_PROGRESS, loadedTask.getTaskStatus());
     }
+
 
 
     @Test
@@ -228,19 +237,28 @@ class FileBackedTaskManagerTest {
         task1.setDuration(Duration.ofMinutes(30));
 
         Task task2 = new Task("Задача 2", "Описание 2");
-        // Намеренно не устанавливаем startTime для task2
         task2.setDuration(Duration.ofMinutes(30));
 
-        taskManager.addTaskToList(task2); // Сначала добавляем задачу без времени
-        taskManager.addTaskToList(task1); // Потом задачу со временем
+        taskManager.addTaskToList(task2);
+        taskManager.addTaskToList(task1);
+
+        // Отладочный код
+        System.out.println("Все задачи:");
+        taskManager.getAllTasksList().forEach(t ->
+                System.out.println("- " + t.getName() + " (startTime: " + t.getStartTime() + ")")
+        );
 
         List<Task> prioritized = taskManager.getPrioritizedTasks();
+        System.out.println("\nПриоритизированные задачи:");
+        prioritized.forEach(t ->
+                System.out.println("- " + t.getName() + " (startTime: " + t.getStartTime() + ")")
+        );
 
         assertNotNull(prioritized);
         assertEquals(2, prioritized.size());
-        // Проверяем, что задача со временем идет первой
         assertEquals(task1, prioritized.get(0));
     }
+
 
 
     @Test

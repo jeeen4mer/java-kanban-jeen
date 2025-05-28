@@ -13,70 +13,61 @@ public final class FormatterUtil {
     }
 
     public static String taskToString(Task task) {
-        StringBuilder result = new StringBuilder();
-        result.append(task.getId()).append(",");
+        String type = task instanceof SubTask ? "SUBTASK" :
+                task instanceof Epic ? "EPIC" : "TASK";
+        String epicId = task instanceof SubTask ? String.valueOf(((SubTask) task).getRelationEpicId()) : "";
+        String startTime = task.getStartTime() != null ? task.getStartTime().toString() : "";
+        String duration = task.getDuration() != null ? String.valueOf(task.getDuration().toMinutes()) : "";
 
-        if (task instanceof SubTask) {
-            result.append("SUBTASK,");
-        } else if (task instanceof Epic) {
-            result.append("EPIC,");
-        } else {
-            result.append("TASK,");
-        }
-
-        result.append(task.getName()).append(",")
-                .append(task.getTaskStatus()).append(",")
-                .append(task.getDescription()).append(",");
-
-        if (task instanceof SubTask) {
-            result.append(((SubTask) task).getRelationEpicId());
-        }
-
-        result.append(",");
-        // Добавляем время и продолжительность
-        result.append(task.getStartTime() != null ? task.getStartTime() : "")
-                .append(",")
-                .append(task.getDuration() != null ? task.getDuration().toMinutes() : "");
-
-        return result.toString();
+        return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
+                task.getId(),
+                type,
+                task.getName(),
+                task.getTaskStatus(),
+                task.getDescription(),
+                epicId,
+                startTime,
+                duration);
     }
 
 
     public static Task taskFromString(String value) {
-        String[] parts = value.split(",");
-        if (parts.length < 7) return null; // Минимальное количество частей
+        String[] parts = value.split(",", -1); // Используем -1, чтобы включать пустые значения в конце
+        if (parts.length < 8) return null; // Теперь проверяем на 8 частей
 
-        int id = Integer.parseInt(parts[0]);
-        String type = parts[1];
-        String name = parts[2];
-        TaskStatus status = TaskStatus.valueOf(parts[3]);
-        String description = parts[4];
+        try {
+            int id = Integer.parseInt(parts[0]);
+            String type = parts[1];
+            String name = parts[2];
+            TaskStatus status = TaskStatus.valueOf(parts[3]);
+            String description = parts[4];
 
-        Task task;
-        if (type.equals("SUBTASK")) {
-            SubTask subTask = new SubTask(name, description);
-            if (!parts[5].isEmpty()) {
-                subTask.setRelationEpicId(Integer.parseInt(parts[5]));
+            Task task;
+            if (type.equals("SUBTASK")) {
+                SubTask subTask = new SubTask(name, description);
+                if (!parts[5].isEmpty()) {
+                    subTask.setRelationEpicId(Integer.parseInt(parts[5]));
+                }
+                task = subTask;
+            } else if (type.equals("EPIC")) {
+                task = new Epic(name, description);
+            } else {
+                task = new Task(name, description);
             }
-            task = subTask;
-        } else if (type.equals("EPIC")) {
-            task = new Epic(name, description);
-        } else {
-            task = new Task(name, description);
-        }
 
-        task.setId(id);
-        task.setTaskStatus(status);
+            task.setId(id);
+            task.setTaskStatus(status);
 
-        // Устанавливаем время и продолжительность
-        if (parts.length > 6 && !parts[6].isEmpty()) {
-            task.setStartTime(LocalDateTime.parse(parts[6]));
-        }
-        if (parts.length > 7 && !parts[7].isEmpty()) {
-            task.setDuration(Duration.ofMinutes(Long.parseLong(parts[7])));
-        }
+            if (!parts[6].isEmpty()) {
+                task.setStartTime(LocalDateTime.parse(parts[6]));
+            }
+            if (!parts[7].isEmpty()) {
+                task.setDuration(Duration.ofMinutes(Long.parseLong(parts[7])));
+            }
 
-        return task;
+            return task;
+        } catch (Exception e) {
+            return null;
+        }
     }
-
 }

@@ -1,37 +1,43 @@
 package manager;
 
+import model.Epic;
+import model.SubTask;
 import model.Task;
+
 import java.util.List;
 
 public interface TaskManager {
 
-    List<Task> getAllTasksList();
+    void addTaskToList(Task task);
 
-    void deleteAllTasks();
+    void addEpicToList(Epic epic);
 
-    Task getTaskById(int idToFind);
-
-    void addTaskToList(Task newTask);
-
-    void addEpicToList(model.Epic newEpic);
-
-    void addSubTaskToList(model.SubTask newSubtask);
+    void addSubTaskToList(SubTask subtask);
 
     void updateTask(Task updatedTask);
 
-    void checkAndSetEpicStatus(int epicId);
+    void deleteById(int id);
 
-    void deleteById(int idToRemove);
+    void deleteAllTasks();
 
-    void removeSubtasksOfEpic(int id);
+    void deleteAllEpics();
 
-    List<model.SubTask> getAllSubtaskOfEpic(int id);
+    void deleteAllSubtasks();
+
+    void removeSubtasksOfEpic(int epicId);
+
+    Task getTaskById(int id);
+
+    List<Task> getAllTasksList();
+
+    List<SubTask> getAllSubtaskOfEpic(int epicId);
 
     List<Task> getHistory();
 
     void removeTaskFromHistoryList(int id);
 
+    boolean isOverlapping(Task newTask);
+
     List<Task> getPrioritizedTasks();
 
-    boolean isOverlapping(Task newTask);
 }
