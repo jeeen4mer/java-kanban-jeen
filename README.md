@@ -18,7 +18,7 @@
 ## 🛠️ Стек технологий
 
 - Java
-- REST API (встроенный HTTP-сервер)
+- REST API
 - Gson
 - JUnit
 - CSV
